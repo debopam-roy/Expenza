@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { useQuery } from '@apollo/client'; // Make sure this is imported
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Import Navigate
+import { useQuery } from '@apollo/client';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -35,8 +35,7 @@ const App = () => {
         localStorage.setItem('theme', mode);
     }, [mode]);
 
-    console.log('USER:', userData?.getUser.authenticated);
-    
+    if (userLoading) return <div>Loading...</div>; // Handle loading state
 
     return (
         <>
@@ -46,11 +45,7 @@ const App = () => {
                     <Routes>
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
-                        {userData?.getUser.authenticated ? 
-                            <Route path="/" element={<Home />} />
-                         : 
-                            <Route path="/login" element={<Login />} />
-                        }
+                        <Route path="/" element={<Home />} />
                     </Routes>
                 </div>
             </Router>

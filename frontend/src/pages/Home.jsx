@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import TransactionCard from '../components/TransactionCard';
 import Navbar from '../components/Navbar';
 import { useMutation, useQuery } from '@apollo/client';
-import { useNavigate } from 'react-router-dom';
 import { GET_TRANSACTIONS } from '../graphql/queries/transaction.query';
 import {
     CREATE_TRANSACTION,
@@ -16,11 +15,9 @@ import empty_list_light from '../assets/empty_list_light.json';
 import {
     AiOutlineSortAscending,
     AiOutlineSortDescending,
-    AiOutlineDownload,
 } from 'react-icons/ai';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { data } from 'autoprefixer';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Home = () => {
@@ -53,6 +50,20 @@ const Home = () => {
             },
         ],
     });
+    const chartOptions = {
+        plugins: {
+            legend: {
+                display: true,
+                position: 'bottom',
+                labels: {
+                    boxWidth: 25,
+                    padding: 15,
+                    color: '#FFF',
+                    fontSize: '300px',
+                },
+            },
+        },
+    };
     const [buttonLabel, setButtonLabel] = useState('Submit');
 
     // Queries and Mutations
@@ -62,8 +73,6 @@ const Home = () => {
     const [createTransaction] = useMutation(CREATE_TRANSACTION);
     const [updateTransaction] = useMutation(UPDATE_TRANSACTION);
     const [deleteTransaction] = useMutation(DELETE_TRANSACTION);
-
-    console.log('HOME');
 
     useEffect(() => {
         if (transactionsData && transactionsData.fetchTransactions) {
@@ -272,20 +281,20 @@ const Home = () => {
         setTransactions(sortedTransactions);
     };
 
-    const handleDownload = () => {
-        // Implement download functionality here
-    };
-
     return (
         <div>
             <Navbar />
 
-            <div className="flex flex-col md:flex-row py-4 px-4">
+            <div className="flex flex-col md:flex-row md:py-4 px-4">
                 <div className="flex-1">
-                    <Doughnut data={chartData} />
+                    <Doughnut
+                        // className="bg-white"
+                        data={chartData}
+                        options={chartOptions}
+                    />
                 </div>
                 <div className="flex-1" ref={formRef}>
-                    <div className="min-h-screen flex items-center justify-center">
+                    <div className="mx-2 min-h-fit my-10 md:my-0 md:min-h-screen flex items-start md:items-center justify-center">
                         <div
                             id="cardContainer"
                             className="p-8 bg-cardBackgroundColor-light dark:bg-cardBackgroundColor-dark rounded-lg shadow-lg sm:w-full sm:max-w-md"
@@ -437,10 +446,6 @@ const Home = () => {
                             className="text-xl text-suggestionColor-light cursor-pointer dark:text-suggestionColor-dark"
                             onClick={handleSortDescending}
                         />
-                        <AiOutlineDownload
-                            className="text-xl text-suggestionColor-light cursor-pointer dark:text-suggestionColor-dark"
-                            onClick={handleDownload}
-                        />
                     </div>
                 </div>
 
@@ -472,7 +477,7 @@ const Home = () => {
                     )}
                 </ul>
             </div>
-            <p className="py-4 text-center"> Made in India . Made with ♥️</p>
+            <p className=" p-4 text-center"> Made in India . Made with ♥️</p>
         </div>
     );
 };
